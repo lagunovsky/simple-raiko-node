@@ -1,0 +1,30 @@
+#!/bin/bash
+
+read -r -e -p "L1 RPC: " -i "${L1_RPC:-https://rpc.ankr.com/eth_holesky}" L1_RPC
+read -r -e -p "L1 Beacon: " -i "${L1_BEACON:-http://unstable.holesky.beacon-api.nimbus.team/}" L1_BEACON
+read -r -e -p "L2 RPC: " -i "${L2_RPC:-https://rpc.hekla.taiko.xyz/}" L2_RPC
+
+curl \
+  --location 'http://localhost:8080' \
+  --header 'Content-Type: application/json' \
+  --data '{
+      "jsonrpc": "2.0",
+      "method": "proof",
+      "params": [
+          {
+              "proof_type": "sgx",
+              "block_number": 31991,
+              "rpc": "'${L2_RPC}'",
+              "l1_rpc": "'${L1_RPC}'",
+              "beacon_rpc": "'${L1_BEACON}'",
+              "prover": "0x7b399987d24fc5951f3e94a4cb16e87414bf2229",
+              "graffiti": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "sgx": {
+                  "setup": false,
+                  "bootstrap": false,
+                  "prove": true
+              }
+          }
+      ],
+      "id": 0
+  }'

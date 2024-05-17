@@ -1,0 +1,33 @@
+services:
+  raiko:
+    build:
+      context: src/raiko
+      dockerfile: Dockerfile
+    image: ${SRN_RAIKO_IMAGE:-raiko}:${SRN_VERSION:-latest}
+    restart: unless-stopped
+    command: --config-path=/etc/raiko/config.sgx.json
+    devices:
+      - "/dev/sgx_enclave:/dev/sgx_enclave"
+      - "/dev/sgx_provision:/dev/sgx_provision"
+    volumes:
+      - ./data/logs/raiko:/var/log/raiko
+      - ./data/gramine:/root/.config/gramine
+      - ./data/raiko:/root/.config/raiko
+    ports:
+      - "${SRN_RAIKO_PORT:-8080}:8080"
+    environment:
+      - SGX_DIRECT=${SRN_SGX_DIRECT:-0}
+      - SGX_INSTANCE_ID=${SRN_INSTANCE_ID}
+    depends_on:
+      - pccs
+
+  pccs:
+    build:
+      context: src/raiko
+      dockerfile: Dockerfile.pccs
+    image: ${SRN_PCCS_IMAGE:-pccs}:${SRN_VERSION:-latest}
+    restart: unless-stopped
+    volumes:
+      - ./data/pccs/default.json:/opt/intel/pccs/config/default.json
+      - ./data/pccs/file.crt:/opt/intel/pccs/ssl_key/file.crt
+      - ./data/pccs/private.pem:/opt/intel/pccs/ssl_key/private.pem

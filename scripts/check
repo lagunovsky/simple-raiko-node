@@ -1,0 +1,17 @@
+#!/bin/bash
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+if [[ ! -f ".checked" ]]; then
+  sudo rm -f /tmp/pckid.csv
+  sudo PCKIDRetrievalTool -f /tmp/pckid.csv
+
+  if [[ -z "$INTEL_API_KEY" ]]; then
+    read -r -e -p "Please provide your ${bold}Intel API key${normal}: " -i "${INTEL_API_KEY}" INTEL_API_KEY
+    export INTEL_API_KEY=${INTEL_API_KEY}
+  fi
+
+  node ./scripts/helpers/check-fmspc.mjs
+  touch .checked
+fi

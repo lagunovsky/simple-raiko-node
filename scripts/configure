@@ -1,0 +1,50 @@
+#!/bin/bash
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+if [[ ! -f ".env" ]]; then
+  cp ".env.example" ".env"
+
+  read -r -e -i "raiko" -p "Please provide ${bold}raiko docker image${normal} name or use default one: " SRN_RAIKO_IMAGE
+  sed -i "s/SRN_RAIKO_IMAGE=/SRN_RAIKO_IMAGE=$SRN_RAIKO_IMAGE/g" ".env"
+
+  read -r -e -i "pccs" -p "Please provide ${bold}pccs docker image name${normal} or use default one: " SRN_PCCS_IMAGE
+  sed -i "s/SRN_PCCS_IMAGE=/SRN_PCCS_IMAGE=$SRN_PCCS_IMAGE/g" ".env"
+
+  read -r -e -i "latest" -p "Please provide docker image ${bold}version${normal} or use default one: " SRN_VERSION
+  sed -i "s/SRN_VERSION=/SRN_VERSION=$SRN_VERSION/g" ".env"
+else
+  source ".env"
+fi
+
+crt_path="data/pccs/file.crt"
+if [[ ! -f "$crt_path" ]]; then
+  openssl genrsa -out "data/pccs/private.pem" 2048
+  chmod 644 "data/pccs/private.pem"
+  openssl req -new -subj "/C=US" -key "data/pccs/private.pem" -out "data/pccs/csr.pem"
+  openssl x509 -req -days 365 -in "data/pccs/csr.pem" -signkey "data/pccs/private.pem" -out ${crt_path}
+  rm -rf "data/pccs/csr.pem"
+fi
+
+config_path="data/pccs/default.json"
+if [[ ! -f "$config_path" ]]; then
+  cp "src/raiko/docker/pccs-defaut-example.json" "${config_path}"
+  chmod 644 "${config_path}"
+
+  if [[ -z "$INTEL_API_KEY" ]]; then
+    read -r -e -p "Please provide your ${bold}Intel API key${normal}: " -i "${INTEL_API_KEY}" INTEL_API_KEY
+  fi
+
+  if [[ -n "$INTEL_API_KEY" ]]; then
+    sed -i "s/\YOUR_API_KEY/$INTEL_API_KEY/g" "${config_path}"
+  fi
+
+  read -r -e -p "Please create ${bold}admin password${normal} for PCCS: " -i "$(openssl rand -hex 8)" ADMIN_TOKEN
+  sed -i "s/\YOUR_USER_TOKEN_HASH/$(echo -n "$ADMIN_TOKEN" | sha512sum | tr -d '[:space:]-')/g" "${config_path}"
+  echo "PCCS_ADMIN_TOKEN=$ADMIN_TOKEN" >> ".env"
+
+  read -r -e -p "Please create ${bold}user password${normal} for PCCS: " -i "$(openssl rand -hex 8)" USER_TOKEN
+  sed -i "s/\YOUR_ADMIN_TOKEN_HASH/$(echo -n "$USER_TOKEN" | sha512sum | tr -d '[:space:]-')/g" "${config_path}"
+  echo "PCCS_USER_TOKEN=$USER_TOKEN" >> ".env"
+fi

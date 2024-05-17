@@ -1,0 +1,7 @@
+[submodule "src/taiko-mono"]
+	path = src/taiko-mono
+	url = https://github.com/taikoxyz/taiko-mono.git
+[submodule "src/raiko"]
+	path = src/raiko
+	url = https://github.com/taikoxyz/raiko
+	branch = taiko/alpha-7

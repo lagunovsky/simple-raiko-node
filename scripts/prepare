@@ -1,0 +1,35 @@
+#!/bin/bash
+
+if ! command -v jq > /dev/null 2>&1; then
+  ubuntu_version=$(lsb_release -rs)
+  if [ "$ubuntu_version" == "22.04" ]; then
+    wget -qO- https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | sudo tee /etc/apt/keyrings/intel-sgx-keyring.asc > /dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/intel-sgx-keyring.asc arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/intel-sgx.list
+  else
+    echo "🚫 Only Ubuntu 22.04 is supported for now."
+    exit 1
+  fi
+
+  sudo apt update && sudo apt install -y sgx-pck-id-retrieval-tool libsgx-dcap-default-qpl jq
+fi
+
+if ! command -v node > /dev/null 2>&1; then
+  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  sudo apt update && sudo apt install nodejs -y
+  sudo npm install -g pnpm
+fi
+
+if ! command -v forge > /dev/null 2>&1; then
+  curl -L https://foundry.paradigm.xyz | bash
+  ~/.foundry/bin/foundryup
+  sudo ln -f -s ~/.foundry/bin/forge /usr/local/bin/forge
+fi
+
+if ! command -v docker > /dev/null 2>&1; then
+  curl https://get.docker.com | sh
+  if [[ $USER != "root" ]]; then
+    sudo usermod -aG docker "$USER"
+    echo "⚠️ You need logging out and back in again"
+    exit 1
+  fi
+fi

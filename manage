@@ -1,0 +1,37 @@
+#!/bin/bash
+
+git submodule update --init src/taiko-mono && sleep 0.2
+git submodule update --init src/raiko && sleep 0.2
+
+action=${1:-help}
+
+if [ "${action}" == "help" ]; then
+  echo "Usage: $0 <action>"
+  echo "Actions:"
+  echo "  setup      Run all the steps to start a raiko"
+  echo "  prepare    Prepare a environment for running raiko (install dependencies, etc.)"
+  echo "  check      Check if a environment is able to run raiko"
+  echo "  configure  Configure a raiko (generate configuration files, etc.)"
+  echo "  register   Register a raiko (onchain register)"
+  echo "  verify     Verify that a raiko instance is running properly"
+  exit 0
+fi
+
+if [ "${action}" == "setup" ]; then
+  set -e
+  source scripts/prepare
+  source scripts/check
+  source scripts/configure
+  source scripts/register
+elif [ "${action}" == "prepare" ]; then
+  source scripts/prepare
+elif [ "${action}" == "check" ]; then
+  source scripts/prepare
+  source scripts/check
+elif  [ "${action}" == "configure" ]; then
+  source scripts/configure
+elif  [ "${action}" == "register" ]; then
+  source scripts/register
+elif  [ "${action}" == "verify" ]; then
+  source scripts/verify
+fi

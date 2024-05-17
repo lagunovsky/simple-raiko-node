@@ -1,0 +1,73 @@
+#!/bin/bash
+
+set -e
+
+timestamp=$(date +%s)
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+priv_key_path="data/raiko/secrets/priv.key"
+bootstrap_path="data/raiko/config/bootstrap.json"
+
+source .env
+
+if [[ -f "$priv_key_path" ]]; then
+  echo "🔑 Found existing private key"
+  read -r -e -p "Do you want register again? (Y/n) " REGISTER_AGAIN
+  if [ "$REGISTER_AGAIN" = "N" ] || [ "$REGISTER_AGAIN" = "n" ]; then
+    exit 0
+  fi
+
+  docker compose down
+  sudo mv "${priv_key_path}" "${priv_key_path}.${timestamp}"
+  sudo mv "${bootstrap_path}" "${bootstrap_path}.${timestamp}"
+  sed -i "s/^SRN_INSTANCE_ID=/SRN_INSTANCE_ID=\n\n# ${timestamp} SRN_INSTANCE_ID=/g" ".env"
+
+  if [[ "$SRN_RAIKO_IMAGE" == "raiko" ]]; then
+    read -r -e -p "Do you want to rebuild raiko images? (Y/n) " REBUILD
+    if [ "$REBUILD" != "N" ] && [ "$REBUILD" != "n" ]; then
+      docker compose build
+    fi
+  else
+    read -r -e -p "Do you want to pull the latest images? (Y/n) " PULL_AGAIN
+    if [ "$PULL_AGAIN" != "N" ] && [ "$PULL_AGAIN" != "n" ]; then
+      docker compose pull
+    fi
+  fi
+fi
+
+if [[ ! -f "$bootstrap_path" ]]; then
+  docker compose down
+  docker compose run --rm raiko --init
+fi
+
+V3_QUOTE_BYTES=$(jq -r '.quote' < "$bootstrap_path")
+
+read -r -e -p "Please provide your ${bold}private key${normal}: " PRIVATE_KEY
+read -r -e -p "Please provide ${bold}RPC url${normal}: " -i "${RPC:-https://rpc.ankr.com/eth_holesky}" RPC
+
+cd "src/taiko-mono/packages/protocol"
+
+pnpm install
+pnpm compile
+
+if ! registration_process=$(PRIVATE_KEY=${PRIVATE_KEY} FORK_URL=${RPC} ./script/config_dcap_sgx_verifier.sh --quote "${V3_QUOTE_BYTES}")
+then
+  echo "$registration_process"
+  echo "🚫 Failed to register SGX instance"
+  cd -
+  exit 1
+fi
+
+echo "$registration_process"
+cd -
+
+SGX_INSTANCE_ID=$(echo "${registration_process}" | grep -oP -m 1 'register sgx instance index: \K\d+')
+
+sed -i "s/^SRN_INSTANCE_ID=/SRN_INSTANCE_ID=$SGX_INSTANCE_ID/g" ".env"
+echo "✅ Registered SGX instance with ID: $SGX_INSTANCE_ID"
+
+docker compose up -d raiko
+
+public_ip=$(curl -s ifconfig.me)
+echo "🚀 raiko is running and accessible at: ${bold}${public_ip}:${SRN_RAIKO_PORT:-8080}${normal}"
