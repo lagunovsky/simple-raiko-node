@@ -3,6 +3,8 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+mkdir -p data/pccs
+
 if [[ ! -f ".env" ]]; then
   cp ".env.example" ".env"
 
