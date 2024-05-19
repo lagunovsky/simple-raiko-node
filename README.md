@@ -40,12 +40,6 @@ cd simple-raiko-node
 - You may have to log in again. If this happens, just run the command again.
 - PCCS password can be left empty if you do not have one.
 
-#### 4. Run the node
-
-```bash
-docker compose up -d
-```
-
 ## Available commands
 
 - `./manage setup`     - prepare, check, configure, and register in one command
