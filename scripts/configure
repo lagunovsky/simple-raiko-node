@@ -1,20 +1,17 @@
 #!/bin/bash
 
-bold=$(tput bold)
-normal=$(tput sgr0)
-
 mkdir -p data/pccs
 
 if [[ ! -f ".env" ]]; then
   cp ".env.example" ".env"
 
-  read -r -e -i "raiko" -p "Please provide ${bold}raiko docker image${normal} name or use default one: " SRN_RAIKO_IMAGE
+  read -r -e -i "raiko" -p "Please provide raiko docker image name or use default one: " SRN_RAIKO_IMAGE
   sed -i "s/SRN_RAIKO_IMAGE=/SRN_RAIKO_IMAGE=$SRN_RAIKO_IMAGE/g" ".env"
 
-  read -r -e -i "pccs" -p "Please provide ${bold}pccs docker image name${normal} or use default one: " SRN_PCCS_IMAGE
+  read -r -e -i "pccs" -p "Please provide pccs docker image name or use default one: " SRN_PCCS_IMAGE
   sed -i "s/SRN_PCCS_IMAGE=/SRN_PCCS_IMAGE=$SRN_PCCS_IMAGE/g" ".env"
 
-  read -r -e -i "latest" -p "Please provide docker image ${bold}version${normal} or use default one: " SRN_VERSION
+  read -r -e -i "latest" -p "Please provide docker image version or use default one: " SRN_VERSION
   sed -i "s/SRN_VERSION=/SRN_VERSION=$SRN_VERSION/g" ".env"
 else
   source ".env"
@@ -35,18 +32,18 @@ if [[ ! -f "$config_path" ]]; then
   chmod 644 "${config_path}"
 
   if [[ -z "$INTEL_API_KEY" ]]; then
-    read -r -e -p "Please provide your ${bold}Intel API key${normal}: " -i "${INTEL_API_KEY}" INTEL_API_KEY
+    read -r -e -p "Please provide your Intel API key: " -i "${INTEL_API_KEY}" INTEL_API_KEY
   fi
 
   if [[ -n "$INTEL_API_KEY" ]]; then
     sed -i "s/\YOUR_API_KEY/$INTEL_API_KEY/g" "${config_path}"
   fi
 
-  read -r -e -p "Please create ${bold}admin password${normal} for PCCS: " -i "$(openssl rand -hex 8)" ADMIN_TOKEN
+  read -r -e -p "Please create admin password for PCCS: " -i "$(openssl rand -hex 8)" ADMIN_TOKEN
   sed -i "s/\YOUR_USER_TOKEN_HASH/$(echo -n "$ADMIN_TOKEN" | sha512sum | tr -d '[:space:]-')/g" "${config_path}"
   echo "PCCS_ADMIN_TOKEN=$ADMIN_TOKEN" >> ".env"
 
-  read -r -e -p "Please create ${bold}user password${normal} for PCCS: " -i "$(openssl rand -hex 8)" USER_TOKEN
+  read -r -e -p "Please create user password for PCCS: " -i "$(openssl rand -hex 8)" USER_TOKEN
   sed -i "s/\YOUR_ADMIN_TOKEN_HASH/$(echo -n "$USER_TOKEN" | sha512sum | tr -d '[:space:]-')/g" "${config_path}"
   echo "PCCS_USER_TOKEN=$USER_TOKEN" >> ".env"
 fi

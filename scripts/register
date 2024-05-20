@@ -3,8 +3,6 @@
 set -e
 
 timestamp=$(date +%s)
-bold=$(tput bold)
-normal=$(tput sgr0)
 
 priv_key_path="data/raiko/secrets/priv.key"
 bootstrap_path="data/raiko/config/bootstrap.json"
@@ -29,6 +27,7 @@ if [[ -f "$priv_key_path" ]]; then
   if [[ "$SRN_RAIKO_IMAGE" == "raiko" ]]; then
     read -r -e -p "Do you want to rebuild raiko images? (Y/n) " REBUILD
     if [ "$REBUILD" != "N" ] && [ "$REBUILD" != "n" ]; then
+      docker compose down
       docker compose build
     fi
   else
@@ -46,8 +45,8 @@ fi
 
 V3_QUOTE_BYTES=$(jq -r '.quote' < "$bootstrap_path")
 
-read -r -e -p "Please provide your ${bold}private key${normal}: " PRIVATE_KEY
-read -r -e -p "Please provide ${bold}RPC url${normal}: " -i "${RPC:-https://rpc.ankr.com/eth_holesky}" RPC
+read -r -e -p "Please provide your private key: " -i "" PRIVATE_KEY
+read -r -e -p "Please provide RPC url: " -i "${RPC:-https://rpc.ankr.com/eth_holesky}" RPC
 
 cd "src/taiko-mono/packages/protocol"
 
@@ -73,4 +72,4 @@ echo "✅ Registered SGX instance with ID: $SGX_INSTANCE_ID"
 docker compose up -d raiko
 
 public_ip=$(curl -s ifconfig.me)
-echo "🚀 raiko is running and accessible at: ${bold}${public_ip}:${SRN_RAIKO_PORT:-8080}${normal}"
+echo "🚀 raiko is running and accessible at: ${public_ip}:${SRN_RAIKO_PORT:-8080}"
