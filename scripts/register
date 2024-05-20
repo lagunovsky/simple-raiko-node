@@ -48,12 +48,13 @@ V3_QUOTE_BYTES=$(jq -r '.quote' < "$bootstrap_path")
 read -r -e -p "Please provide your private key: " -i "" PRIVATE_KEY
 read -r -e -p "Please provide RPC url: " -i "${RPC:-https://rpc.ankr.com/eth_holesky}" RPC
 
-cd "src/taiko-mono/packages/protocol"
+register_sgx_helper=$(pwd)/scripts/helpers/register-sgx
 
+cd "src/taiko-mono/packages/protocol"
 pnpm install
 pnpm compile
 
-if ! registration_process=$(PRIVATE_KEY=${PRIVATE_KEY} FORK_URL=${RPC} ./script/config_dcap_sgx_verifier.sh --quote "${V3_QUOTE_BYTES}")
+if ! registration_process=$(PRIVATE_KEY=${PRIVATE_KEY} FORK_URL=${RPC} V3_QUOTE_BYTES=${V3_QUOTE_BYTES} ${register_sgx_helper})
 then
   echo "$registration_process"
   echo "🚫 Failed to register SGX instance"
@@ -72,4 +73,4 @@ echo "✅ Registered SGX instance with ID: $SGX_INSTANCE_ID"
 docker compose up -d raiko
 
 public_ip=$(curl -s ifconfig.me)
-echo "🚀 raiko is running and accessible at: ${public_ip}:${SRN_RAIKO_PORT:-8080}"
+echo "🚀 raiko is running and accessible at: http://${public_ip}:${SRN_RAIKO_PORT:-8080}"

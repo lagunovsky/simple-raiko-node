@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export SGX_VERIFIER_ADDRESS=0x532EFBf6D62720D0B2a2Bb9d11066E8588cAE6D9
+export ATTESTATION_ADDRESS=0xC6cD3878Fc56F2b2BaB0769C580fc230A95e1398
+export PEM_CERTCHAIN_ADDRESS=0x08d7865e7F534d743Aba5874A9AD04bcB223a92E
+export TASK_ENABLE=0,0,0,0,0,1
+
+forge script script/SetDcapParams.s.sol:SetDcapParams \
+    --fork-url ${FORK_URL} \
+    --broadcast \
+    --ffi \
+    -vvvv \
+    --block-gas-limit 100000000 \
+    --private-key ${PRIVATE_KEY} \
+    --legacy
