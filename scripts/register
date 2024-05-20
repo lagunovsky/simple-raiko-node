@@ -70,7 +70,7 @@ SGX_INSTANCE_ID=$(echo "${registration_process}" | grep -oP -m 1 'register sgx i
 sed -i "s/^SRN_INSTANCE_ID=/SRN_INSTANCE_ID=$SGX_INSTANCE_ID/g" ".env"
 echo "✅ Registered SGX instance with ID: $SGX_INSTANCE_ID"
 
-docker compose up -d raiko
+docker compose down && docker compose up -d raiko
 
 public_ip=$(curl -s ifconfig.me)
-echo "🚀 raiko is running and accessible at: http://${public_ip}:${SRN_RAIKO_PORT:-8080}"
+echo && echo "🚀 raiko is running and accessible at: http://${public_ip}:${SRN_RAIKO_PORT:-8080}"
