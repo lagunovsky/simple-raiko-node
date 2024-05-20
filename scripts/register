@@ -11,6 +11,9 @@ bootstrap_path="data/raiko/config/bootstrap.json"
 
 source .env
 
+mkdir -p data/raiko/config
+mkdir -p data/raiko/secrets
+
 if [[ -f "$priv_key_path" ]]; then
   echo "🔑 Found existing private key"
   read -r -e -p "Do you want register again? (Y/n) " REGISTER_AGAIN
