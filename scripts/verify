@@ -1,11 +1,12 @@
 #!/bin/bash
 
+read -r -e -p "Raiko URL: " -i "${RAIKO_URL:-http://localhost:8080}" RAIKO_URL
 read -r -e -p "L1 RPC: " -i "${L1_RPC:-https://rpc.ankr.com/eth_holesky}" L1_RPC
 read -r -e -p "L1 Beacon: " -i "${L1_BEACON:-http://unstable.holesky.beacon-api.nimbus.team/}" L1_BEACON
 read -r -e -p "L2 RPC: " -i "${L2_RPC:-https://rpc.hekla.taiko.xyz/}" L2_RPC
 
 curl \
-  --location 'http://localhost:8080' \
+  --location ${RAIKO_URL} \
   --header 'Content-Type: application/json' \
   --data '{
       "jsonrpc": "2.0",
