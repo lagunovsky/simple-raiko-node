@@ -3,5 +3,4 @@
 	url = https://github.com/taikoxyz/taiko-mono.git
 [submodule "src/raiko"]
 	path = src/raiko
-	url = https://github.com/taikoxyz/raiko
-	branch = taiko/alpha-7
+	url = https://github.com/taikoxyz/raiko.git

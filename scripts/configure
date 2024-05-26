@@ -6,13 +6,13 @@ if [[ ! -f ".env" ]]; then
   cp ".env.example" ".env"
 
   read -r -e -i "raiko" -p "Please provide raiko docker image name or use default one: " SRN_RAIKO_IMAGE
-  sed -i "s/SRN_RAIKO_IMAGE=/SRN_RAIKO_IMAGE=$SRN_RAIKO_IMAGE/g" ".env"
+  sed -i "s@SRN_RAIKO_IMAGE=@SRN_RAIKO_IMAGE=$SRN_RAIKO_IMAGE@g" ".env"
 
   read -r -e -i "pccs" -p "Please provide pccs docker image name or use default one: " SRN_PCCS_IMAGE
-  sed -i "s/SRN_PCCS_IMAGE=/SRN_PCCS_IMAGE=$SRN_PCCS_IMAGE/g" ".env"
+  sed -i "s@SRN_PCCS_IMAGE=@SRN_PCCS_IMAGE=$SRN_PCCS_IMAGE@g" ".env"
 
   read -r -e -i "latest" -p "Please provide docker image version or use default one: " SRN_VERSION
-  sed -i "s/SRN_VERSION=/SRN_VERSION=$SRN_VERSION/g" ".env"
+  sed -i "s@SRN_VERSION=@SRN_VERSION=$SRN_VERSION@g" ".env"
 else
   source ".env"
 fi
