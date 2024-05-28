@@ -50,7 +50,7 @@ If Raiko is already installed by instructions from the [README_Docker_and_RA.md]
 
 [raiko]: https://github.com/taikoxyz/raiko
 
-[raiko-readme-docker-and-ra]: https://github.com/taikoxyz/raiko/blob/taiko/alpha-7/README_Docker_and_RA.md
+[raiko-readme-docker-and-ra]: https://github.com/taikoxyz/raiko/blob/main/docs/README_Docker_and_RA.md
 
 [intel-dcap-install-howto]: https://www.intel.com/content/www/us/en/developer/articles/guide/intel-software-guard-extensions-data-center-attestation-primitives-quick-install-guide.html
 
