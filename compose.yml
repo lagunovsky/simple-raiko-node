@@ -3,7 +3,7 @@ services:
     build:
       context: src/raiko
       dockerfile: Dockerfile
-    image: ${SRN_RAIKO_IMAGE:-raiko}:${SRN_TAG:-latest}
+    image: ${SRN_RAIKO_IMAGE:-raiko}:${SRN_IMAGES_TAG:-latest}
     restart: unless-stopped
     command: --config-path=/etc/raiko/config.sgx.json --chain-spec-path=/etc/raiko/chain_spec_list.docker.json
     devices:
@@ -33,7 +33,7 @@ services:
     build:
       context: src/raiko
       dockerfile: Dockerfile.pccs
-    image: ${SRN_PCCS_IMAGE:-pccs}:${SRN_TAG:-latest}
+    image: ${SRN_PCCS_IMAGE:-pccs}:${SRN_IMAGES_TAG:-latest}
     restart: unless-stopped
     volumes:
       - ./data/pccs/default.json:/opt/intel/pccs/config/default.json
