@@ -8,6 +8,7 @@ export TASK_ENABLE=0,0,0,0,0,1
 forge script script/SetDcapParams.s.sol:SetDcapParams \
     --fork-url ${FORK_URL} \
     --broadcast \
+    --evm-version cancun \
     --ffi \
     -vvvv \
     --block-gas-limit 100000000 \
