@@ -1,6 +1,8 @@
 #!/bin/bash
 
-read -r -e -p "Chain [ethereum, holesky, taiko_mainnet, taiko_a7]: " -i "${CHAIN:-taiko_a7}" CHAIN
+source .env
+
+read -r -e -p "Chain [ethereum, holesky, taiko_mainnet, taiko_a7]: " -i "${CHAIN:-${SRN_NETWORK:-taiko_a7}}" CHAIN
 read -r -e -p "Proof type [native, sp1, sgx, risc0, risc0-bonsai]: " -i "${PROOF_TYPE:-sgx}" PROOF_TYPE
 read -r -e -p "Block number: " -i "${RANGE_START:-99999}" RANGE_START
 
