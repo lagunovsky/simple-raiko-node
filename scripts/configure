@@ -5,15 +5,51 @@ mkdir -p data/pccs
 if [[ ! -f ".env" ]]; then
   cp ".env.example" ".env"
 
-  read -r -e -i "raiko" -p "Please provide raiko docker image name or use default one: " SRN_RAIKO_IMAGE
-  sed -i "s@SRN_RAIKO_IMAGE=@SRN_RAIKO_IMAGE=$SRN_RAIKO_IMAGE@g" ".env"
+  function specify_env_variable() {
+    local prompt_message=$1
+    local env_variable=$2
+    local default_value=$3
 
-  read -r -e -i "pccs" -p "Please provide pccs docker image name or use default one: " SRN_PCCS_IMAGE
-  sed -i "s@SRN_PCCS_IMAGE=@SRN_PCCS_IMAGE=$SRN_PCCS_IMAGE@g" ".env"
+    read -r -e -i "$default_value" -p "$prompt_message" value
+    sed -i "s@$env_variable=@$env_variable=$value@g" ".env"
 
-  read -r -e -i "latest" -p "Please provide docker image version or use default one: " SRN_VERSION
-  sed -i "s@SRN_VERSION=@SRN_VERSION=$SRN_VERSION@g" ".env"
+    export "$env_variable"="$value"
+  }
+
+  specify_env_variable "Specify the Raiko docker image name: " "SRN_RAIKO_IMAGE" "raiko"
+  specify_env_variable "Specify the PCCS docker image name: " "SRN_PCCS_IMAGE" "pccs"
+  specify_env_variable "Specify the images tag: " "SRN_IMAGES_TAG" "latest"
+
+  read -r -e -p "Do you want specify the network configuration? [Y/n]: " SPECIFY_NETWORK
+  if [ "$SPECIFY_NETWORK" != "N" ] && [ "$SPECIFY_NETWORK" != "n" ]; then
+    specify_env_variable "Specify the L1 network [holesky, ethereum]: " "SRN_L1_NETWORK" "holesky"
+    specify_env_variable "Specify the L2 network [taiko_a7, taiko_mainnet]: " "SRN_NETWORK" "taiko_a7"
+
+    if [ "$SRN_L1_NETWORK" == "ethereum" ]; then
+      specify_env_variable "Specify the Ethereum RPC endpoint: " "SRN_ETHEREUM_RPC"
+      specify_env_variable "Specify the Ethereum Beacon RPC endpoint: " "SRN_ETHEREUM_BEACON_RPC"
+    else
+      specify_env_variable "Specify the Holesky RPC endpoint: " "SRN_HOLESKY_RPC"
+      specify_env_variable "Specify the Holesky Beacon RPC endpoint: " "SRN_HOLESKY_BEACON_RPC"
+    fi
+
+    if [ "$SRN_NETWORK" == "taiko_a7" ]; then
+      specify_env_variable "Specify the Taiko A7 RPC endpoint: " "SRN_TAIKO_A7_RPC"
+    else
+      specify_env_variable "Specify the Taiko Mainnet RPC endpoint: " "SRN_TAIKO_MAINNET_RPC"
+    fi
+  fi
+
+  specify_env_variable "Specify the raiko port: " "SRN_RAIKO_PORT" "8080"
+
+  read -r -e -p "Do you want collect metrics? [Y/n]: " COLLECT_METRICS
+  if [ "$COLLECT_METRICS" != "N" ] && [ "$COLLECT_METRICS" != "n" ]; then
+    sed -i "s@COMPOSE_PROFILES=@COMPOSE_PROFILES=metrics@g" ".env"
+    specify_env_variable "Specify the prometheus port: " "SRN_PROMETHEUS_PORT" "9090"
+    specify_env_variable "Specify the grafana port: " "SRN_GRAFANA_PORT" "3000"
+  fi
 else
+  echo "Using existing .env file"
   source ".env"
 fi
 
@@ -41,9 +77,9 @@ if [[ ! -f "$config_path" ]]; then
 
   read -r -e -p "Please create admin password for PCCS: " -i "$(openssl rand -hex 8)" ADMIN_TOKEN
   sed -i "s/\YOUR_USER_TOKEN_HASH/$(echo -n "$ADMIN_TOKEN" | sha512sum | tr -d '[:space:]-')/g" "${config_path}"
-  echo "PCCS_ADMIN_TOKEN=$ADMIN_TOKEN" >> ".env"
+  echo "PCCS_ADMIN_TOKEN=$ADMIN_TOKEN" >>".env"
 
   read -r -e -p "Please create user password for PCCS: " -i "$(openssl rand -hex 8)" USER_TOKEN
   sed -i "s/\YOUR_ADMIN_TOKEN_HASH/$(echo -n "$USER_TOKEN" | sha512sum | tr -d '[:space:]-')/g" "${config_path}"
-  echo "PCCS_USER_TOKEN=$USER_TOKEN" >> ".env"
+  echo "PCCS_USER_TOKEN=$USER_TOKEN" >>".env"
 fi

@@ -3,7 +3,7 @@ services:
     build:
       context: src/raiko
       dockerfile: Dockerfile
-    image: ${SRN_RAIKO_IMAGE:-raiko}:${SRN_VERSION:-latest}
+    image: ${SRN_RAIKO_IMAGE:-raiko}:${SRN_TAG:-latest}
     restart: unless-stopped
     command: --config-path=/etc/raiko/config.sgx.json
     devices:
@@ -18,14 +18,14 @@ services:
     environment:
       - SGX_DIRECT=${SRN_SGX_DIRECT:-0}
       - SGX_INSTANCE_ID=${SRN_INSTANCE_ID}
+      - L1_NETWORK=${SRN_L1_NETWORK}
+      - NETWORK=${SRN_NETWORK}
       - ETHEREUM_RPC=${SRN_ETHEREUM_RPC}
-      - ETHEREUM_CHAIN_ID=${SRN_ETHEREUM_CHAIN_ID}
+      - ETHEREUM_BEACON_RPC=${SRN_ETHEREUM_BEACON_RPC}
       - HOLESKY_RPC=${SRN_HOLESKY_RPC}
       - HOLESKY_BEACON_RPC=${SRN_HOLESKY_BEACON_RPC}
       - TAIKO_A7_RPC=${SRN_TAIKO_A7_RPC}
       - TAIKO_MAINNET_RPC=${SRN_TAIKO_MAINNET_RPC}
-      - L1_NETWORK=${SRN_L1_NETWORK}
-      - NETWORK=${SRN_NETWORK}
     depends_on:
       - pccs
 
@@ -33,7 +33,7 @@ services:
     build:
       context: src/raiko
       dockerfile: Dockerfile.pccs
-    image: ${SRN_PCCS_IMAGE:-pccs}:${SRN_VERSION:-latest}
+    image: ${SRN_PCCS_IMAGE:-pccs}:${SRN_TAG:-latest}
     restart: unless-stopped
     volumes:
       - ./data/pccs/default.json:/opt/intel/pccs/config/default.json
@@ -47,7 +47,7 @@ services:
       - ./src/raiko/docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus:/prometheus
     ports:
-      - "9090:9090"
+      - "${SRN_PROMETHEUS_PORT:-9090}:9090"
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     profiles:
@@ -57,7 +57,7 @@ services:
     image: grafana/grafana:latest
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${SRN_GRAFANA_PORT:-3000}:3000"
     volumes:
       - ./data/grafana/provisioning:/etc/grafana/provisioning
       - grafana:/var/lib/grafana

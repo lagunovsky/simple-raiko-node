@@ -22,7 +22,7 @@ if [[ -f "$priv_key_path" ]]; then
   docker compose down
   sudo mv "${priv_key_path}" "${priv_key_path}.${timestamp}"
   sudo mv "${bootstrap_path}" "${bootstrap_path}.${timestamp}"
-  sed -i "s/^SRN_INSTANCE_ID=/SRN_INSTANCE_ID=\n\n# ${timestamp} SRN_INSTANCE_ID=/g" ".env"
+  sed -i "s/^SRN_INSTANCE_ID=/SRN_INSTANCE_ID=\n# ${timestamp} SRN_INSTANCE_ID=/g" ".env"
 
   if [[ "$SRN_RAIKO_IMAGE" == "raiko" ]]; then
     read -r -e -p "Do you want to rebuild raiko images? (Y/n) " REBUILD
