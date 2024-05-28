@@ -13,7 +13,7 @@ mkdir -p data/raiko/config
 mkdir -p data/raiko/secrets
 
 if [[ -f "$priv_key_path" ]]; then
-  echo "🔑 Found existing private key"
+  echo "🔑 Found existing raiko private key"
   read -r -e -p "Do you want register again? (Y/n) " REGISTER_AGAIN
   if [ "$REGISTER_AGAIN" = "N" ] || [ "$REGISTER_AGAIN" = "n" ]; then
     exit 0
