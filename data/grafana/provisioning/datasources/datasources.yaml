@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: raiko
+    type: prometheus
+    uid: b8b7aedcf2c74b77
+    editable: true
+    isDefault: true
+    access: proxy
+    url: http://prometheus:9090

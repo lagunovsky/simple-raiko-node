@@ -39,3 +39,31 @@ services:
       - ./data/pccs/default.json:/opt/intel/pccs/config/default.json
       - ./data/pccs/file.crt:/opt/intel/pccs/ssl_key/file.crt
       - ./data/pccs/private.pem:/opt/intel/pccs/ssl_key/private.pem
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./src/raiko/docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus:/prometheus
+    ports:
+      - "9090:9090"
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    profiles:
+      - metrics
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana/provisioning:/etc/grafana/provisioning
+      - grafana:/var/lib/grafana
+    profiles:
+      - metrics
+
+volumes:
+  grafana:
+  prometheus:
