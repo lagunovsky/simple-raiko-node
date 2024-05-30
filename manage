@@ -14,6 +14,7 @@ if [ "${action}" == "help" ]; then
   echo "  configure  Configure a raiko (generate configuration files, etc.)"
   echo "  register   Register a raiko (onchain register)"
   echo "  verify     Verify that a raiko instance is running properly"
+  echo "  reset      Remove data and reset source code to the initial state"
   exit 0
 fi
 
@@ -35,4 +36,6 @@ elif  [ "${action}" == "register" ]; then
   source scripts/register
 elif  [ "${action}" == "verify" ]; then
   source scripts/verify
+elif  [ "${action}" == "reset" ]; then
+  source scripts/reset
 fi

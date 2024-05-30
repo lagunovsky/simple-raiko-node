@@ -2,19 +2,21 @@
 
 set -e
 
+source .env
+source scripts/helpers/functions
+
 timestamp=$(date +%s)
 
 priv_key_path="data/raiko/secrets/priv.key"
 bootstrap_path="data/raiko/config/bootstrap.json"
-
-source .env
 
 mkdir -p data/raiko/config
 mkdir -p data/raiko/secrets
 
 if [[ -f "$priv_key_path" ]]; then
   echo "🔑 Found existing raiko private key"
-  read -r -e -p "Do you want register again? (Y/n) " REGISTER_AGAIN
+
+  ask "Do you want to register again? [Y/N]" REGISTER_AGAIN "N"
   if [ "$REGISTER_AGAIN" = "N" ] || [ "$REGISTER_AGAIN" = "n" ]; then
     exit 0
   fi
@@ -25,28 +27,23 @@ if [[ -f "$priv_key_path" ]]; then
   sed -i "s/^SRN_INSTANCE_ID=/SRN_INSTANCE_ID=\n# ${timestamp} SRN_INSTANCE_ID=/g" ".env"
 
   if [[ "$SRN_RAIKO_IMAGE" == "raiko" ]]; then
-    read -r -e -p "Do you want to rebuild raiko images? (Y/n) " REBUILD
-    if [ "$REBUILD" != "N" ] && [ "$REBUILD" != "n" ]; then
-      docker compose down
+    ask "Do you want to rebuild images? [Y/N]" BUILD_AGAIN "N"
+    if [ "$BUILD_AGAIN" != "N" ] && [ "$BUILD_AGAIN" != "n" ]; then
       docker compose build
     fi
   else
-    read -r -e -p "Do you want to pull the latest images? (Y/n) " PULL_AGAIN
+    ask "Do you want to pull the latest images? [Y/N]" PULL_AGAIN "N"
     if [ "$PULL_AGAIN" != "N" ] && [ "$PULL_AGAIN" != "n" ]; then
       docker compose pull
     fi
   fi
 fi
 
-if [[ ! -f "$bootstrap_path" ]]; then
-  docker compose down
-  docker compose run --rm raiko --init
-fi
+docker compose run --rm raiko --init
+V3_QUOTE_BYTES=$(jq -r '.quote' <"$bootstrap_path")
 
-V3_QUOTE_BYTES=$(jq -r '.quote' < "$bootstrap_path")
-
-read -r -e -p "Please provide your private key: " -i "" PRIVATE_KEY
-read -r -e -p "Please provide RPC url: " -i "${RPC:-https://rpc.ankr.com/eth_holesky}" RPC
+ask "Provide your private key:" PRIVATE_KEY
+ask "Provide L1 L1_RPC url: " L1_RPC "https://rpc.ankr.com/eth_holesky"
 
 register_sgx_helper=$(pwd)/scripts/helpers/register-sgx
 
@@ -54,8 +51,7 @@ cd "src/taiko-mono/packages/protocol"
 pnpm install
 pnpm compile
 
-if ! registration_process=$(PRIVATE_KEY=${PRIVATE_KEY} FORK_URL=${RPC} V3_QUOTE_BYTES=${V3_QUOTE_BYTES} ${register_sgx_helper})
-then
+if ! registration_process=$(PRIVATE_KEY=${PRIVATE_KEY} FORK_URL=${L1_RPC} V3_QUOTE_BYTES=${V3_QUOTE_BYTES} ${register_sgx_helper}); then
   echo "$registration_process"
   echo "🚫 Failed to register SGX instance"
   cd -
@@ -74,3 +70,8 @@ docker compose down && docker compose up -d
 
 public_ip=$(curl -s ifconfig.me)
 echo && echo "🚀 raiko is running and accessible at: http://${public_ip}:${SRN_RAIKO_PORT:-8080}"
+
+if [[ $COMPOSE_PROFILES == "metrics" ]]; then
+  echo "📊 Prometheus is running and accessible at: http://${public_ip}:${SRN_PROMETHEUS_PORT:-9090}"
+  echo "📈 Grafana is running and accessible at: http://${public_ip}:${SRN_GRAFANA_PORT:-3000}"
+fi

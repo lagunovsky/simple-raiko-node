@@ -1,0 +1,24 @@
+#!/bin/bash
+
+function read_intel_api_key {
+  if [[ -z $INTEL_API_KEY ]]; then
+    if [[ $DEBIAN_FRONTEND != "noninteractive" ]]; then
+      echo "INTEL_API_KEY is not set."
+      exit 1
+    fi
+
+    read -r -e -p "Please provide your Intel API key: " -i "${INTEL_API_KEY}" INTEL_API_KEY
+  fi
+}
+
+function ask() {
+  local prompt=$1
+  local variable=$2
+  local value=${!variable:-${3}}
+
+  if [[ $DEBIAN_FRONTEND == "noninteractive" ]]; then
+    export "${variable}"="${value}"
+  else
+    read -r -e -i "${value}" -p "${prompt} " "${variable?}"
+  fi
+}
