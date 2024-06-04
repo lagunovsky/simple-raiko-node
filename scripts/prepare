@@ -14,6 +14,7 @@ if ! command -v jq > /dev/null 2>&1; then
 fi
 
 if ! command -v node > /dev/null 2>&1; then
+  sleep 2
   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
   sudo apt update && sudo apt install nodejs -y
   sudo npm install -g pnpm
@@ -26,6 +27,7 @@ if ! command -v forge > /dev/null 2>&1; then
 fi
 
 if ! command -v docker > /dev/null 2>&1; then
+  sleep 2
   curl https://get.docker.com | sh
   if [[ $USER != "root" ]]; then
     sudo usermod -aG docker "$USER"
