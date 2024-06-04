@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo rm -rf data .env
+sudo rm -rf data .env .checked
 git reset --hard
