@@ -13,6 +13,6 @@ if [[ ! -f ".checked" ]]; then
 
   read_intel_api_key
 
-  node ./scripts/helpers/check-fmspc.mjs
+  INTEL_API_KEY=${INTEL_API_KEY} node ./scripts/helpers/check-fmspc.mjs
   touch .checked
 fi
