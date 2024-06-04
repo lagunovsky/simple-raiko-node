@@ -6,7 +6,7 @@ export PEM_CERTCHAIN_ADDRESS=0x08d7865e7F534d743Aba5874A9AD04bcB223a92E
 export TASK_ENABLE=0,0,0,0,0,1
 
 forge script script/SetDcapParams.s.sol:SetDcapParams \
-    --fork-url ${L1_RPC} \
+    --fork-url ${FORK_URL} \
     --broadcast \
     --evm-version cancun \
     --ffi \
