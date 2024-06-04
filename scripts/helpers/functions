@@ -2,7 +2,7 @@
 
 function read_intel_api_key {
   if [[ -z $INTEL_API_KEY ]]; then
-    if [[ $DEBIAN_FRONTEND != "noninteractive" ]]; then
+    if [[ $DEBIAN_FRONTEND == "noninteractive" ]]; then
       echo "INTEL_API_KEY is not set."
       exit 1
     fi
