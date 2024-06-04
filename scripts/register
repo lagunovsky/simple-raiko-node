@@ -45,7 +45,7 @@ docker compose run --rm raiko --init
 V3_QUOTE_BYTES=$(jq -r '.quote' <"$bootstrap_path")
 
 ask "Provide your private key:" PRIVATE_KEY
-ask "Provide L1 L1_RPC url: " L1_RPC "https://rpc.ankr.com/eth_holesky"
+ask "Provide L1 RPC url: " L1_RPC "https://rpc.ankr.com/eth_holesky"
 
 register_sgx_helper=$(pwd)/scripts/helpers/register-sgx
 
