@@ -58,17 +58,23 @@ else
   L1_RPC=${L1_RPC_DEFAULTS[${SRN_L1_NETWORK}]}
 fi
 
-register_sgx_helper=$(pwd)/scripts/helpers/register-sgx
+register_sgx_path=$(pwd)/scripts/helpers/register-sgx
+mono_deps_path=$(pwd)/.mono-deps
 
+current_rev=$(git rev-parse --short HEAD:src/taiko-mono)
+installed_rev=$(cat "$mono_deps_path" 2>/dev/null || echo "-")
 cd "src/taiko-mono/packages/protocol"
-pnpm install
-pnpm compile
+if [[ "$current_rev" != "$installed_rev" ]]; then
+  pnpm install
+  pnpm compile
+  echo "${current_rev}" >"$mono_deps_path"
+fi
 
 export SRN_L1_NETWORK
 export L1_RPC
 export PRIVATE_KEY
 
-if ! registration_process=$($register_sgx_helper); then
+if ! registration_process=$($register_sgx_path); then
   echo "$registration_process"
   echo "🚫 Failed to register SGX instance"
   exit 1

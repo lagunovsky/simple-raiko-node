@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo rm -rf data .env .checked
+sudo rm -rf data .env .checked .mono-deps
 git reset --hard
