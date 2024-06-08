@@ -21,7 +21,9 @@ fi
 if [ "${action}" == "setup" ]; then
   set -e
   source scripts/prepare
-  source scripts/check
+  if [[ $DEBIAN_FRONTEND != "noninteractive" ]]; then
+    source scripts/check
+  fi
   source scripts/configure
   source scripts/register
 elif [ "${action}" == "prepare" ]; then
