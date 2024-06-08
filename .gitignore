@@ -2,3 +2,4 @@ data
 .env
 .checked
 .mono-deps
+.pnpm-store
