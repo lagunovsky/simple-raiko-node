@@ -17,8 +17,8 @@ function ask() {
   local value=${!variable:-${3}}
 
   if [[ $DEBIAN_FRONTEND == "noninteractive" ]]; then
-    export "${variable}"="${value}"
+    export "$variable"="$value"
   else
-    read -r -e -i "${value}" -p "${prompt} " "${variable?}"
+    read -r -e -p "${prompt} " -i "${value}" "${variable?}"
   fi
 }

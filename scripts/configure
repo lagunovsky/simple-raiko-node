@@ -11,10 +11,10 @@ if [[ ! -f ".env" ]]; then
     local variable=$2
     local value=${!variable:-${3}}
 
-    if [ "$DEBIAN_FRONTEND" == "noninteractive" ]; then
+    if [[ $DEBIAN_FRONTEND == "noninteractive" ]]; then
       export "$variable"="$value"
     else
-      read -r -e -i "${value}" -p "${prompt}" value
+      read -r -e -p "${prompt} " -i "${value}" "${variable?}"
     fi
 
     sed -i "s@$variable=@$variable=$value@g" ".env"
