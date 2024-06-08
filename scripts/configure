@@ -17,7 +17,7 @@ if [[ ! -f ".env" ]]; then
       read -r -e -p "${prompt} " -i "${value}" "${variable?}"
     fi
 
-    sed -i "s@$variable=@$variable=$value@g" ".env"
+    sed -i "s@$variable=@$variable=${!variable}@g" ".env"
   }
 
   specify_env_variable "Specify the Raiko docker image name:" SRN_RAIKO_IMAGE "raiko"
