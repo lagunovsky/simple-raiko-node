@@ -4,6 +4,8 @@ This project includes a set of scripts and configurations to set up and manage a
 
 Prerequisites can be found in the [README_Docker_and_RA.md][raiko-readme-docker-and-ra].
 
+Supports mainnet and holesky networks.
+
 ## Setup
 
 #### 1. Subscribing to Intel PCS Service
