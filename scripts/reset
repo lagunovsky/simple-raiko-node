@@ -1,4 +1,5 @@
 #!/bin/bash
 
+docker compose down -v
 sudo rm -rf data .env .checked .mono-deps
 git reset --hard
