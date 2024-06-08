@@ -2,14 +2,7 @@
 
 This project includes a set of scripts and configurations to set up and manage a [Raiko][raiko] instance.
 
-## Prerequisites
-
-- Ubuntu 22.04 with minimum kernel version 5.15
-- Intel SGX-enabled CPU
-- 2 CPU cores and 8GB memory
-- 4GB minimum allocation for the "Enclave Page Cache Size"
-
-More information can be found in the [README_Docker_and_RA.md][raiko-readme-docker-and-ra].
+Prerequisites can be found in the [README_Docker_and_RA.md][raiko-readme-docker-and-ra].
 
 ## Setup
 
@@ -35,11 +28,10 @@ cd simple-raiko-node
 - You may have to log in again. If this happens, just run the command again.
 - PCCS password can be left empty if you do not have one.
 
-<details>
-<summary>Non-interactive setup</summary>
+### Non-interactive setup
+
 
 ```bash
-touch .checked && \
 HISTIGNORE="manage setup" \
 DEBIAN_FRONTEND=noninteractive \
 INTEL_API_KEY= \
@@ -47,32 +39,33 @@ PRIVATE_KEY= \
 ./manage setup
 ```
 
-Available variables:
+<details>
+<summary>Available variables</summary>
 
-| Variable                | Optional | Default                            |
-|-------------------------|----------|------------------------------------|
-| INTEL_API_KEY           | No       |                                    |
-| PRIVATE_KEY             | No       |                                    |
-| SRN_RAIKO_IMAGE         | Yes      | `raiko`                            |
-| SRN_PCCS_IMAGE          | Yes      | `pccs`                             |
-| SRN_IMAGES_TAG          | Yes      | `latest`                           |
-| SRN_RAIKO_PORT          | Yes      | `8080`                             |
-| SPECIFY_NETWORK         | Yes      | `Y`                                |
-| SRN_L1_NETWORK          | Yes      | `holesky`                          |
-| SRN_NETWORK             | Yes      | `taiko_a7`                         |
-| SRN_ETHEREUM_RPC        | Yes      |                                    |
-| SRN_ETHEREUM_BEACON_RPC | Yes      |                                    |
-| SRN_HOLESKY_RPC         | Yes      |                                    |
-| SRN_HOLESKY_BEACON_RPC  | Yes      |                                    |
-| SRN_TAIKO_MAINNET_RPC   | Yes      |                                    |
-| SRN_TAIKO_A7_RPC        | Yes      |                                    |
-| COLLECT_METRICS         | Yes      | `Y`                                |
-| SRN_PROMETHEUS_PORT     | Yes      | `9090`                             |
-| SRN_GRAFANA_PORT        | Yes      | `3000`                             |
-| REGISTER_AGAIN          | Yes      | `N`                                |
-| BUILD_AGAIN             | Yes      | `N`                                |
-| PULL_AGAIN              | Yes      | `N`                                |
-| L1_RPC                  | Yes      | `https://rpc.ankr.com/eth_holesky` |
+| Variable                | Optional | Available Value              | Default                                                          |
+|-------------------------|----------|------------------------------|------------------------------------------------------------------|
+| INTEL_API_KEY           | No       |                              |                                                                  |
+| PRIVATE_KEY             | No       |                              |                                                                  |
+| SRN_RAIKO_IMAGE         | Yes      |                              | `raiko`                                                          |
+| SRN_PCCS_IMAGE          | Yes      |                              | `pccs`                                                           |
+| SRN_IMAGES_TAG          | Yes      |                              | `latest`                                                         |
+| SRN_RAIKO_PORT          | Yes      |                              | `8080`                                                           |
+| SPECIFY_NETWORK         | Yes      | `Y` / `N`                    | `Y`                                                              |
+| SRN_L1_NETWORK          | Yes      | `holesky` / `ethereum`       | `holesky`                                                        |
+| SRN_NETWORK             | Yes      | `taiko_a7` / `taiko_mainnet` | `taiko_a7`                                                       |
+| SRN_ETHEREUM_RPC        | Yes      |                              |                                                                  |
+| SRN_ETHEREUM_BEACON_RPC | Yes      |                              |                                                                  |
+| SRN_HOLESKY_RPC         | Yes      |                              |                                                                  |
+| SRN_HOLESKY_BEACON_RPC  | Yes      |                              |                                                                  |
+| SRN_TAIKO_MAINNET_RPC   | Yes      |                              |                                                                  |
+| SRN_TAIKO_A7_RPC        | Yes      |                              |                                                                  |
+| COLLECT_METRICS         | Yes      | `Y` / `N`                    | `Y`                                                              |
+| SRN_PROMETHEUS_PORT     | Yes      |                              | `9090`                                                           |
+| SRN_GRAFANA_PORT        | Yes      |                              | `3000`                                                           |
+| REGISTER_AGAIN          | Yes      | `Y` / `N`                    | `N`                                                              |
+| BUILD_AGAIN             | Yes      | `Y` / `N`                    | `N`                                                              |
+| PULL_AGAIN              | Yes      | `Y` / `N`                    | `N`                                                              |
+| L1_RPC                  | Yes      |                              | `https://rpc.ankr.com/eth[_holesky]` (depends on SRN_L1_NETWORK) |
 
 </details>
 
