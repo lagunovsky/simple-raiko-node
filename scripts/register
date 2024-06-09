@@ -38,10 +38,9 @@ if [[ -f "$priv_key_path" ]]; then
       docker compose pull
     fi
   fi
-
-  sleep 10
 fi
 
+docker compose up -d pccs && sleep 4
 docker compose run --rm raiko --init
 
 quote=$(jq -r '.quote' <"$bootstrap_path")
