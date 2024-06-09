@@ -64,9 +64,7 @@ else
   L1_RPC=${L1_RPC_DEFAULTS[${SRN_L1_NETWORK}]}
 fi
 
-register_sgx_path="$workdir/scripts/helpers/register-sgx"
 mono_deps_path="$workdir/.mono-deps"
-
 current_rev=$(git rev-parse --short HEAD:src/taiko-mono)
 installed_rev=$(cat "$mono_deps_path" 2>/dev/null || echo "-")
 cd "src/taiko-mono/packages/protocol"
@@ -82,6 +80,7 @@ export PRIVATE_KEY
 export ETH_GAS_PRICE
 
 set +e
+register_sgx_path="$workdir/scripts/helpers/register-sgx"
 registration_process=$($register_sgx_path 2>&1 | tee /dev/tty)
 unset PRIVATE_KEY
 echo "$registration_process" > "$workdir/data/logs/raiko/register-$timestamp.log"
