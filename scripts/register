@@ -47,7 +47,11 @@ quote=$(jq -r '.quote' <"$bootstrap_path")
 export V3_QUOTE_BYTES=${quote}
 
 ask "Provide your private key:" PRIVATE_KEY
-ask "Enter the gas price in wei, empty for auto-detect:" ETH_GAS_PRICE
+
+ask "Enter the gas price in wei, empty for auto-detect:" GAS_PRICE
+if [[ -z $GAS_PRICE ]]; then
+  ETH_GAS_PRICE=$GAS_PRICE
+fi
 
 declare -A L1_RPC_DEFAULTS
 L1_RPC_DEFAULTS["holesky"]=${SRN_HOLESKY_RPC:-"https://rpc.ankr.com/eth_holesky"}
