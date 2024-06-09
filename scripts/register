@@ -38,7 +38,7 @@ if [[ -f "$priv_key_path" ]]; then
     fi
   fi
 
-  sleep 5
+  sleep 10
 fi
 
 docker compose run --rm raiko --init
