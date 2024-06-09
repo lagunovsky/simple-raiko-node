@@ -49,7 +49,7 @@ export V3_QUOTE_BYTES=${quote}
 ask "Provide your private key:" PRIVATE_KEY
 
 ask "Enter the gas price in wei, empty for auto-detect:" GAS_PRICE
-if [[ -z $GAS_PRICE ]]; then
+if [[ -n $GAS_PRICE ]]; then
   ETH_GAS_PRICE=$GAS_PRICE
 fi
 
