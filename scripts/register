@@ -47,7 +47,7 @@ quote=$(jq -r '.quote' <"$bootstrap_path")
 export V3_QUOTE_BYTES=${quote}
 
 ask "Provide your private key:" PRIVATE_KEY
-ask "Enter the gas price in wei, empty for auto-detect: " GAS_PRICE
+ask "Enter the gas price in wei, empty for auto-detect:" ETH_GAS_PRICE
 
 declare -A L1_RPC_DEFAULTS
 L1_RPC_DEFAULTS["holesky"]=${SRN_HOLESKY_RPC:-"https://rpc.ankr.com/eth_holesky"}
@@ -74,7 +74,7 @@ fi
 export SRN_L1_NETWORK
 export L1_RPC
 export PRIVATE_KEY
-export GAS_PRICE
+export ETH_GAS_PRICE
 
 if ! registration_process=$($register_sgx_path); then
   echo "$registration_process"
