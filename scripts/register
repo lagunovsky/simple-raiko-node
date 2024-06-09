@@ -82,8 +82,9 @@ export ETH_GAS_PRICE
 
 set +e
 registration_process=$($register_sgx_path 2>&1 | tee /dev/tty)
+echo "$registration_process" > "data/logs/raiko/register-$timestamp.log"
 
-SGX_INSTANCE_ID=$(node ./scripts/helpers/parse-forge-output.mjs "$registration_process")
+SGX_INSTANCE_ID=$(node ./scripts/helpers/parse-forge-output.mjs "data/logs/raiko/register-$timestamp.log")
 if [[ -z $SGX_INSTANCE_ID ]]; then
   echo "🚫 Failed to register SGX instance"
   exit 1
