@@ -30,7 +30,6 @@ cd simple-raiko-node
 
 ### Non-interactive setup
 
-
 ```bash
 HISTIGNORE="manage setup" \
 DEBIAN_FRONTEND=noninteractive \
@@ -66,6 +65,7 @@ PRIVATE_KEY= \
 | BUILD_AGAIN             | Yes      | `Y` / `N`                    | `N`                                                              |
 | PULL_AGAIN              | Yes      | `Y` / `N`                    | `N`                                                              |
 | L1_RPC                  | Yes      |                              | `https://rpc.ankr.com/eth[_holesky]` (depends on SRN_L1_NETWORK) |
+| GAS_PRICE               | Yes      |                              |                                                                  |
 
 </details>
 

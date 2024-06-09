@@ -14,6 +14,11 @@ if [ "$SRN_L1_NETWORK" == "holesky" ]; then
   export TASK_ENABLE=0,0,0,0,0,1
 fi
 
+ask "Enter the gas price in wei, empty for auto-detect: " GAS_PRICE
+if [ -n "$GAS_PRICE" ]; then
+  ADDITIONAL_ARGS+=" --with-gas-price ${GAS_PRICE}"
+fi
+
 forge script script/SetDcapParams.s.sol:SetDcapParams \
   --fork-url "${L1_RPC}" \
   --broadcast \
@@ -22,4 +27,5 @@ forge script script/SetDcapParams.s.sol:SetDcapParams \
   -vvvv \
   --block-gas-limit 100000000 \
   --private-key "${PRIVATE_KEY}" \
-  --legacy
+  --legacy \
+  "${ADDITIONAL_ARGS:-}"
