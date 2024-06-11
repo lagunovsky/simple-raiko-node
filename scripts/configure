@@ -20,8 +20,8 @@ if [[ ! -f ".env" ]]; then
     sed -i "s@$variable=@$variable=${!variable}@g" ".env"
   }
 
-  specify_env_variable "Specify the Raiko docker image name:" SRN_RAIKO_IMAGE "raiko"
-  specify_env_variable "Specify the PCCS docker image name:" SRN_PCCS_IMAGE "pccs"
+  specify_env_variable "Specify the Raiko docker image name:" SRN_RAIKO_IMAGE "us-docker.pkg.dev/evmchain/images/raiko"
+  specify_env_variable "Specify the PCCS docker image name:" SRN_PCCS_IMAGE "us-docker.pkg.dev/evmchain/images/pccs"
   specify_env_variable "Specify the images tag:" SRN_IMAGES_TAG "latest"
 
   ask "Do you want specify the network configuration? [Y/N]" SPECIFY_NETWORK "Y"
