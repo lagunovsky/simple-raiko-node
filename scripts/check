@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source .env
 source scripts/helpers/functions
 
 if [[ ! -f ".checked" ]]; then
@@ -12,7 +13,11 @@ if [[ ! -f ".checked" ]]; then
   fi
 
   read_intel_api_key
+  ask "Specify the L2 network [taiko_a7, taiko_mainnet]:" SRN_NETWORK "taiko_mainnet"
 
-  INTEL_API_KEY=${INTEL_API_KEY} node ./scripts/helpers/check-fmspc.mjs
+  export INTEL_API_KEY
+  export SRN_NETWORK
+
+  node ./scripts/helpers/check-fmspc.mjs
   touch .checked
 fi
