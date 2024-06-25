@@ -7,6 +7,13 @@ const FMSPCs = [
   '00906ED50000',
 ]
 
+if (process.env.SRN_NETWORK === 'taiko_a7') {
+  FMSPCs.push(
+    '30606A000000',
+    '00706A100000'
+  )
+}
+
 const [encrypted_ppid, pceid, cpusvn, pcesvn] = fs.readFileSync('/tmp/pckid.csv', 'utf8').trim().split(',')
 
 const url = 'https://api.trustedservices.intel.com/sgx/certification/v4/pckcert'
