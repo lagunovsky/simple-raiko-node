@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+source .env 2>/dev/null || true
 source scripts/helpers/functions
 
 if [[ ! -f ".checked" ]]; then
